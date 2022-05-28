@@ -4,44 +4,44 @@
  * Created: 3/5/2020 4:42:51 PM
  *	  Rev 1 3/5/2020
  * Description:	ATMEGA2560 communicates with computer over SSH and prints
- *				strings and characters to a connected LCD screen. The
- *				controller sends a prompt to the computer to send a string.
- *				The received string is printed to the next line of the LCD
- *				screen, then is echoed back to the computer. A string that is
- *				longer than the length of the screen (16 chars) is split into
- *				two lines on the LCD screen. A string that is longer than both
- *				lines of the LCD screen combined (32 chars) is not printed or
- *				echoed, and an error message is printed on the LCD screen.
- *				Sending the ^C (Ctrl + c) command causes the controller to
- *				clear the screen. This code also includes commented hard code
- *				for printing individual characters to each line of the LCD as
- *				well as commented hard code for printing a string to the top
- *				line of the LCD.
+ *		strings and characters to a connected LCD screen. The
+ *		controller sends a prompt to the computer to send a string.
+ *		The received string is printed to the next line of the LCD
+ *		screen, then is echoed back to the computer. A string that is
+ *		longer than the length of the screen (16 chars) is split into
+ *		two lines on the LCD screen. A string that is longer than both
+ *		lines of the LCD screen combined (32 chars) is not printed or
+ *		echoed, and an error message is printed on the LCD screen.
+ *		Sending the ^C (Ctrl + c) command causes the controller to
+ *		clear the screen. This code also includes commented hard code
+ *		for printing individual characters to each line of the LCD as
+ *		well as commented hard code for printing a string to the top
+ *		line of the LCD.
  *
  * Hardware:	ATMega 2560 operating at 16 MHz
- *				LCD screen
- *				10 KOhm potentiometer (POT)
- *				jumper wires
+ *		LCD screen
+ *		10 KOhm potentiometer (POT)
+ *		jumper wires
  * Configuration shown below
  *
- * ATMega 2560			LCD Screen
- *  PORT   pin         pin      	 
+ * ATMega 2560	       LCD Screen
+ *  PORT   pin             pin      	 
  * -----------         ----------
- * |		 |	  GND--|K		|
- * |		 |	   5V--|A		|
- * | A7    29|---------|D7		|
- * | A6    28|---------|D6		|
- * | A5    27|---------|D5		|
- * | A4    26|---------|D4		|
- * |      	 |         |		|
- * | B1    52|---------|E		|
- * |		 |	  GND--|RW		|	10KOhm Potentiometer
- * | B0    53|---------|RS		|			POT
- * |      	 |         |		|		-----------
- * |		 |		   |	  V0|-------|W		5V|--5V
- * |	   5V|----5V---|VDD		|		|	   GND|--GND
- * |	  GND|---GND---|VSS		|		-----------
- * -----------		   ----------
+ * |	     |	  GND--|K	|
+ * |	     |	   5V--|A	|
+ * | A7    29|---------|D7	|
+ * | A6    28|---------|D6	|
+ * | A5    27|---------|D5	|
+ * | A4    26|---------|D4	|
+ * |         |         |	|
+ * | B1    52|---------|E	|
+ * |	     |	  GND--|RW	|   10KOhm Potentiometer
+ * | B0    53|---------|RS	|	    POT
+ * |         |         |	|	-----------
+ * |	     |	       |      V0|-------|W	5V|--5V
+ * |	   5V|----5V---|VDD	|	|      GND|--GND
+ * |	  GND|---GND---|VSS	|	-----------
+ * -----------	       ----------
  */
 
 #define F_CPU 16000000
@@ -62,8 +62,8 @@
 #define LCD_4bit_enable        0b00100000          // 4-bit data - can't set the line display or fonts until this is set  //
 #define LCD_4bit_mode          0b00101000          // 2-line display, 5 x 8 font  //
 #define LCD_4bit_displayOFF    0b00001000          // set display off  //
-#define LCD_4bit_displayON     0b00001100         // set display on - no blink //
-#define LCD_4bit_displayON_Bl  0b00001101         // set display on - with blink //
+#define LCD_4bit_displayON     0b00001100          // set display on - no blink //
+#define LCD_4bit_displayON_Bl  0b00001101          // set display on - with blink //
 #define LCD_4bit_displayCLEAR  0b00000001          // replace all chars with "space"  //
 #define LCD_4bit_entryMODE     0b00000110          // set curser to write/read from left -> right  //
 #define LCD_4bit_cursorSET     0b10000000          // set cursor position
@@ -113,18 +113,18 @@ static FILE USART0_IN = FDEV_SETUP_STREAM(NULL, uart_getchar0,
 
 int main(void)
 {
-    DDRB = 0x23;	//setup pins in ports A and B as outputs
-    DDRA = 0xF0;
+	DDRB = 0x23;	//setup pins in ports A and B as outputs
+	DDRA = 0xF0;
 	
-    //Initialize the LCD for 4-bit mode, two lines, and 5 x 8 dots
-    //Inits found on Page 26 of datasheet and Table 7 for function set 
+	//Initialize the LCD for 4-bit mode, two lines, and 5 x 8 dots
+	//Inits found on Page 26 of datasheet and Table 7 for function set 
 	//instructions
-    LCD_init();
+	LCD_init();
 	
 	//initialize timer 0 to toggle PORTB pin 0x20 for LCD screen
-    initializeTimers();	
+	initializeTimers();	
 	//initialize USART 0 for transmit and recieve
-    InitUSART0();
+	InitUSART0();
     
 	int LCDLine = 0;
 	int retStat = 0;
@@ -132,8 +132,8 @@ int main(void)
 	
 	//print single character on each line of LCD
 	/*
-	char Char1 = 'W';	//char for line 1
-	char Char2 = 'J';	//char for line 2
+	char Char1 = 'W';		//char for line 1
+	char Char2 = 'J';		//char for line 2
 	outputHardChars(Char1, Char2);	//print chars to screen
 	while(1){}			//do nothing
 	*/
@@ -141,22 +141,22 @@ int main(void)
 	//print single line to LCD
 	/*
 	outputHardLine(line);	//output line
-	while(1){}   			//do nothing
+	while(1){}   		//do nothing
 	*/
 	
 	//serial communication controlled LCD printing
-    while(1)
-    {	
+	while(1)
+	{	
 		//prompt user
 		fprintf(&USART0_OUT, "Enter a string or command: ");
 		//get line from serial port
 		retStat = getInput0(line);
 		//check line and output to screen and serial port
 		outputLine(line, &LCDLine, retStat);
-		
-		_delay_ms(500);							//delay half a second
-    }
-    return 1;
+		//delay half a second
+		_delay_ms(500);
+	}
+	return 1;
 }
 
 /*
@@ -278,24 +278,24 @@ void LCD_write_char(char Data)
 /*
  * Function:	LCD_write_str
  *  Writes the input string to the input line on the LCD screen. wraps line if
- *	it is too large for one line. Does not check if the string is too large 
- *	for two lines and will continue line wrapping. Checking if a string is too
- *	large for two LCD lines will be handled outside of this function.
+ *  it is too large for one line. Does not check if the string is too large 
+ *  for two lines and will continue line wrapping. Checking if a string is too
+ *  large for two LCD lines will be handled outside of this function.
  *
- *	arr		char[]	string to be written to LCD screen
- *	line	int*	LCD screen line to be cleared
+ *  arr		char[]	string to be written to LCD screen
+ *  line	int*	LCD screen line to be cleared
  *
  *  returns:  none
  */
 void LCD_write_str(char arr[MAX_INPUT], int* LCDLine){
-	int i = 0;		//array index counter
+	int i = 0;	//array index counter
 	int count = 0;	//LCD line wrapping counter
 	
 	//set line to write
 	if(*LCDLine == 0){	//write to line 1
 		LCD_write_instruction(LCD_4bit_cursorSET | LineOneStart);
 	}
-	else{				//write to line 2
+	else{			//write to line 2
 		LCD_write_instruction(LCD_4bit_cursorSET | LineTwoStart);
 	}
 	_delay_us(80);		//short delay for LCD to update
@@ -303,78 +303,78 @@ void LCD_write_str(char arr[MAX_INPUT], int* LCDLine){
 	//loop to write chars to line until null terminator is encountered
 	while(arr[i] != '\0'){
 		LCD_write_char(arr[i]);	//write current char
-		i++;					//increment index counter for array
-		count++;				//increment line wrapping counter
+		i++;			//increment index counter for array
+		count++;		//increment line wrapping counter
 		
 		if(arr[i] != '\0'){
 			//check if line needs to be wrapped
 			if(count > 15){
-				count = 0;			//reset line wrapping counter
+				count = 0;		//reset line wrapping counter
 				*LCDLine ^= 0x01;	//update current LCD line
 				
-									//change LCD line
+							//change LCD line
 				if(*LCDLine == 0){	//select LCD line 1
 					LCD_write_instruction(LCD_4bit_cursorSET | LineOneStart);
 				}
-				else{				//select LDC line 2
+				else{			//select LDC line 2
 					LCD_write_instruction(LCD_4bit_cursorSET | LineTwoStart);
 				}
 				_delay_us(80);		//short delay for LCD to update
 			}
 		}
 	}
-	*LCDLine ^= 0x01;				//change current LCD line
+	*LCDLine ^= 0x01;	//change current LCD line
 	return;
 }
 
 /*
  * Function:	LCD_clear_line
  *  Clears a line of the LCD screen based on the input pointer, then corrects 
- *	the value the pointer is pointing at to be the line that was cleared.
+ *  the value the pointer is pointing at to be the line that was cleared.
  *
- *	line	int*	LCD screen line to be cleared
+ *  line	int*	LCD screen line to be cleared
  *
  *  returns:  none
  */
 void LCD_clear_line(int* line){
 	LCD_write_str("                ", line);	//write clear line to LCD
-	*line ^= 0x01;								//go to line that was cleared
+	*line ^= 0x01;					//go to line that was cleared
 	return;
 }
 /*
  * Function:  InitTimer0
  *  Sets up timer0 to output a PWM signal to the OC0B port (G5) with the
- * 	following settings:    	8-bit phase corrected PWM
- *                                          	non inverted
- *                                          	256 prescaler
+ *  following settings:	8-bit phase corrected PWM
+ *                      non inverted
+ *                    	256 prescaler
  *
  *  returns:  none
  */
 
 /*
  * Function:	initializeTimers
- *	Sets up timer0 to run with a 256 prescaler and enables timer 0 overflow
- *	interrupt.
+ *  Sets up timer0 to run with a 256 prescaler and enables timer 0 overflow
+ *  interrupt.
  *
  *  returns:	none
  */
 void initializeTimers(){
    	TCCR0A = 0x00;
-   	TCCR0B |= (1<<CS12); //turn timer0 on with 256 prescaler
+   	TCCR0B |= (1<<CS12); 	//turn timer0 on with 256 prescaler
  
-   	sei();    	//Enable global interrupts by setting global interrupt enable
-                //bit in SREG
+   	sei();    		//Enable global interrupts by setting global interrupt enable
+                		//bit in SREG
    	
-   	TIMSK0 = (1 << TOIE0);        	//enable timer0 overflow interrupt(TOIE0)
-   	TCNT0 = 65536 - 1;            	//timer0 overflow in one clock cycle
+   	TIMSK0 = (1 << TOIE0);	//enable timer0 overflow interrupt(TOIE0)
+   	TCNT0 = 65536 - 1;	//timer0 overflow in one clock cycle
    	
    	return;
 }
 
 /*
  * Function:	InitUSART0
- *	Sets up USART0 to use a baudrate equal to the global constant 
- *	USART_BAUDRATE, and use 8 bit character frames and async mode.
+ *  Sets up USART0 to use a baudrate equal to the global constant 
+ *  USART_BAUDRATE, and use 8 bit character frames and async mode.
  *
  *  returns:	none
  */
@@ -390,89 +390,89 @@ void InitUSART0(){
 
 /*
  * Function:	uart_putchar0
- *	Function to send chars to USART0. Used to setup USART0_OUT as a file
- *	pointer to the serial port so that data can be sent there.
+ *  Function to send chars to USART0. Used to setup USART0_OUT as a file
+ *  pointer to the serial port so that data can be sent there.
  *
- *	c		char	character to be transmitted through the serial line
- *	stream	FILE*	pointer for USART0 output
+ *  c		char	character to be transmitted through the serial line
+ *  stream	FILE*	pointer for USART0 output
  *
  *  returns:	0	successful function run
  */
 int uart_putchar0(char c, FILE* stream){
 	if(c == '\n') uart_putchar0('\r', stream);	//change newlines to return 
-												//carriage
+							//carriage
 	loop_until_bit_is_set(UCSR0A, UDRE0);		//wait until transmitter is 
-												//ready for new data
-	UDR0 = c;									//transmit next character
+							//ready for new data
+	UDR0 = c;					//transmit next character
 	return 0;
 }
 
 /*
  * Function:	uart_getchar0
- *	Function to get chars from USART0. Used to setup USART0_IN as a file 
- *	pointer to the serial port so that data can be received from USART0.
+ *  Function to get chars from USART0. Used to setup USART0_IN as a file 
+ *  pointer to the serial port so that data can be received from USART0.
  *
  *  returns:	int	value recieved from serial communication port, USART0
  */
 int uart_getchar0(void){
 	uint8_t temp;
 	while(!(UCSR0A & (1 << RXC0)));	//wait for serial value to enter UDR
-	temp = UDR0;					//get value from UDR and return it
+	temp = UDR0;			//get value from UDR and return it
 	return temp;
 }
 
 
 /*
  * Function:	getInput0
- *	Gets line from USART0 and stores in input array, then returns the number
- *	of characters stored in the input array.
+ *  Gets line from USART0 and stores in input array, then returns the number
+ *  of characters stored in the input array.
  *
- *	input	char[]	array to be filled by string from USART0
+ *  input	char[]	array to be filled by string from USART0
  *
  *  returns:	int	number of chars in input array
  */
 int getInput0(char input[MAX_INPUT]){
 	int inputVal;
 	inputVal = fscanf(&USART0_IN, "%[^\r]s ", input);	//get input line
-	fgetc(&USART0_IN);						//clear input buffer
+	fgetc(&USART0_IN);					//clear input buffer
 	
 	return inputVal;
 }
 
 /*
  * Function:	checkInput
- *	Checks input string to see if Ctrl+C was pressed or if input is too long.
- *	Returns a status value depending on if either of these are true
+ *  Checks input string to see if Ctrl+C was pressed or if input is too long.
+ *  Returns a status value depending on if either of these are true
  *
- *	input	char[]	string to be checked
+ *  input	char[]	string to be checked
  *
  *  returns:	0	status is normal
- *				1	status is clear screen (Ctrl+C is entered)
- *				2	status is input line is too long
+ *		1	status is clear screen (Ctrl+C is entered)
+ *		2	status is input line is too long
  */
 int checkInput(char input[MAX_INPUT]){
 	int status = 0;
 	
-	status = checkClearInput(input);	//check if Ctrl+C is entered
-	if(status != 0){					//return 1 if true
+	status = checkClearInput(input);//check if Ctrl+C is entered
+	if(status != 0){		//return 1 if true
 		return status;
 	}
 	
-	status = checkInputLen(input);		//check if input line is too long
-										//set status to 2 if true
+	status = checkInputLen(input);	//check if input line is too long
+					//set status to 2 if true
 	
-	return status;						//return status;
+	return status;			//return status;
 }
 
 /*
  * Function:	checkClearInput
- *	Checks input string. If input string contains only Ctrl+C, then the LCD 
- *	screen is cleared. A status value is returned.
+ *  Checks input string. If input string contains only Ctrl+C, then the LCD 
+ *  screen is cleared. A status value is returned.
  *
- *	input	char[]	string to be checked
+ *  input	char[]	string to be checked
  *
  *  returns:	0	screen was not cleared (Ctrl+C is not entered)
- *				1	screen is cleared (Ctrl+C is entered)
+ *		1	screen is cleared (Ctrl+C is entered)
  */
 int checkClearInput(char input[MAX_INPUT]){
 	int temp = 0;
@@ -481,20 +481,20 @@ int checkClearInput(char input[MAX_INPUT]){
 		LCD_clear_line(&temp);	//clear line 1
 		temp = 1;
 		LCD_clear_line(&temp);	//clear line 2
-		return 1;				//return clear line status
+		return 1;		//return clear line status
 	}
-	return 0;					//Ctrl+C was not entered
+	return 0;			//Ctrl+C was not entered
 }
 
 /*
  * Function:	checkInputLen
- *	Checks input string. If input string is too long to be outputted to both 
- *	lines of the LCD screen, 2 is returned, else 0 is returned
+ *  Checks input string. If input string is too long to be outputted to both 
+ *  lines of the LCD screen, 2 is returned, else 0 is returned
  *
- *	input	char[]	string to be checked
+ *  input	char[]	string to be checked
  *
  *  returns:	0	string will fit on LCD screen
- *				2	string will not fit on LCD screen
+ *		2	string will not fit on LCD screen
  */
 int checkInputLen(char input[MAX_INPUT]){
 	for(int i = 0; i < 33; i++){	//for loop to check for end of string
@@ -508,63 +508,63 @@ int checkInputLen(char input[MAX_INPUT]){
 
 /*
  * Function:	outputLine
- *	Check the status of the input line and output accordingly. If status is 0
- *	(normal status), write the input string to the input line of the LCD 
- *	screen. If status is 1 (clear screen), output nothing. If status is 2 
- *	(string is too long), then output an error message. Also checks if return
- *	was pressed without any other input (input string is empty) and changes the
- *	LCD line without clearing if true.
+ *  Check the status of the input line and output accordingly. If status is 0
+ *  (normal status), write the input string to the input line of the LCD 
+ *  screen. If status is 1 (clear screen), output nothing. If status is 2 
+ *  (string is too long), then output an error message. Also checks if return
+ *  was pressed without any other input (input string is empty) and changes the
+ *  LCD line without clearing if true.
  *
- *	input			char[]	string to be written to the LCD screen
- *	LCDLine			int*	line of the LCD screen to write the string to 
- *							(will wrap to the other line if too long for one 
- *							line)
- *	returnStatus	int		number of chars in input string (without null 
- *							terminator)
+ *  input	char[]	string to be written to the LCD screen
+ *  LCDLine	int*	line of the LCD screen to write the string to 
+ *		(will wrap to the other line if too long for one 
+ *		line)
+ *  returnStatus	int	number of chars in input string (without null 
+ *				terminator)
  *
  *  returns:	none
  */
 void outputLine(char input[MAX_INPUT], int* LCDLine, int returnStatus){
 	int status = 0;
 	
-	if(returnStatus == 0){	//change LCD line if return is pressed without a string
+	if(returnStatus == 0){		//change LCD line if return is pressed without a string
 		strcpy(input, "");	//write nothing to line (without clearing)
 		LCD_write_str(input, LCDLine);
-		return;				//return from function
+		return;			//return from function
 	}
 	
 	status = checkInput(input);	//get the ststus of the input string
 	
-	if(status == 0){				//if string is normal, output to LCD
+	if(status == 0){		//if string is normal, output to LCD
 		LCD_clear_line(LCDLine);	//clear LCD line and write string to line
 		LCD_write_str(input, LCDLine);
 		//return input line to USART0
 		fprintf(&USART0_OUT, "Your str is: %s \n\r", input);
 	}
-	if(status == 2){			//if string is too long, print error message
-		printErr(LCDLine);		//print error message and set LCDline to 0
+	if(status == 2){		//if string is too long, print error message
+		printErr(LCDLine);	//print error message and set LCDline to 0
 	}
 	return;
 }
 
 /*
  * Function:	printErr
- *	Write error message to LCD screen and set LCDLine to 0
+ *  Write error message to LCD screen and set LCDLine to 0
  *
- *	LCDLine			int*	line of the LCD screen to write the string to
+ *  LCDLine	int*	line of the LCD screen to write the string to
  *
  *  returns:	none
  */
 void printErr(int* LCDLine){
 	char errMsg[MAX_INPUT] = "Error:";
 	
-	*LCDLine = 0;					//write to LCD line 1
-	LCD_clear_line(LCDLine);		//clear line
+	*LCDLine = 0;			//write to LCD line 1
+	LCD_clear_line(LCDLine);	//clear line
 	LCD_write_str(errMsg, LCDLine);	//print top half of error message
 	
 	strcpy(errMsg, "Line Too Long");
-	*LCDLine = 1;					//write to LCD line 2
-	LCD_clear_line(LCDLine);		//clear line
+	*LCDLine = 1;			//write to LCD line 2
+	LCD_clear_line(LCDLine);	//clear line
 	LCD_write_str(errMsg, LCDLine);	//write bottom half of error message
 	
 	return;
@@ -572,26 +572,26 @@ void printErr(int* LCDLine){
 
 /*
  * Function:	outputHardLine
- *	Prints hard coded string to LCD screen. Checks the status of the input 
- *	line and output accordingly. If status is 0 (normal status), write the
- *	input string to the input line of the LCD screen. If status is 1 (clear 
- *	screen), output nothing. If status is 2 (string is too long), then output 
- *	an error message.
+ *  Prints hard coded string to LCD screen. Checks the status of the input 
+ *  line and output accordingly. If status is 0 (normal status), write the
+ *  input string to the input line of the LCD screen. If status is 1 (clear 
+ *  screen), output nothing. If status is 2 (string is too long), then output 
+ *  an error message.
  *
- *	input	char[]	string to be written to the LCD screen
+ *  input	char[]	string to be written to the LCD screen
  *
  *  returns:	none
  */
 void outputHardLine(char input[MAX_INPUT]){
 	int status = 0;
-	int LCDLine = 0;	//write to line 1 of LCD screen
+	int LCDLine = 0;		//write to line 1 of LCD screen
 	
-	status = checkInput(input);		//check input string
+	status = checkInput(input);	//check input string
 	
 	//if status is 0, clear the first line of the LCD screen and write input
 	//line to LCD screen. String is wrapped if it is too long for one line 
 	if(status == 0){
-		LCD_clear_line(&LCDLine);		//clear line
+		LCD_clear_line(&LCDLine);	//clear line
 		LCD_write_str(input, &LCDLine);	//write line
 	}
 	//if status is 2 (line is too long), write error message to LCD screen
@@ -603,19 +603,19 @@ void outputHardLine(char input[MAX_INPUT]){
 
 /*
  * Function:	printHardErr
- *	Write error message to LCD screen. Used for hard coded strings
+ *  Write error message to LCD screen. Used for hard coded strings
  *
  *  returns:	none
  */
 void printHardErr(){
 	char errMsg[MAX_INPUT] = "Error:";
-	int LCDLine = 0;					//set line to 1
-	LCD_clear_line(&LCDLine);			//clear line
+	int LCDLine = 0;			//set line to 1
+	LCD_clear_line(&LCDLine);		//clear line
 	LCD_write_str(errMsg, &LCDLine);	//write first half of error message
 	
 	strcpy(errMsg, "Line Too Long");
-	LCDLine = 1;						//set line to 2
-	LCD_clear_line(&LCDLine);			//clear line
+	LCDLine = 1;				//set line to 2
+	LCD_clear_line(&LCDLine);		//clear line
 	LCD_write_str(errMsg, &LCDLine);	//write second half of error message
 	
 	return;
@@ -623,10 +623,10 @@ void printHardErr(){
 
 /*
  * Function:	outputHardChars
- *	Write a single char to each line of the LCD screen
+ *  Write a single char to each line of the LCD screen
  *
- *	char1	char	char to be written to first line
- *	char2	char	char to be written to second line
+ *  char1	char	char to be written to first line
+ *  char2	char	char to be written to second line
  *
  *  returns:	none
  */
