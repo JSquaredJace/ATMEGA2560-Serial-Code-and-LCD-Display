@@ -4,5 +4,5 @@ Embedded C program for ATMEGA 2560 created for CENG447 Lab 5. ATMEGA2560 communi
 # Demo Video
 A less compressed version can be found in the main folder of this repo.
 
-https://user-images.githubusercontent.com/103338215/215162943-db1b442d-5d2c-42d3-987b-9a69928049b4.mp4
+https://user-images.githubusercontent.com/103338215/215163268-dce280ff-2a69-401f-8299-fde09bf2dad1.mp4
 
